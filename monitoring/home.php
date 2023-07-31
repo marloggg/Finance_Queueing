@@ -130,7 +130,7 @@
                     }else{
                         nitem.show('slow')
                       //  speak("Queue Number "+(Math.abs(resp.queue))+resp.name+", Please proceed to "+cashier) with name
-                        speak("RAD"+(Math.abs(resp.queue))+", Please proceed to "+cashier)
+                        speak("LIVE"+(Math.abs(resp.queue))+", Please proceed to "+cashier)
                     }
                 }
             }
