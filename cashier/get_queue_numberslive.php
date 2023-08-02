@@ -6,12 +6,12 @@ require_once("./../DBConnection.php");
 $current_date = date('Y-m-d');
 
 // Retrieve data from database
-$sql = "SELECT * FROM queue_list WHERE status = 2 AND DATE(date_created) = '$current_date' ORDER BY queue ASC LIMIT 9";
+$sql = "SELECT * FROM queue_listlive WHERE status = 2 AND DATE(date_created) = '$current_date' ORDER BY queue ASC LIMIT 9";
 $result = $conn->query($sql);
 
 echo '<div class="card col-md-10 shadow me-2">';
 echo '<div class="card-header">';
-echo '<h5 class="card-title text-center">NEXT QUEUE RAD</h5>';
+echo '<h5 class="card-title text-center">NEXT QUEUE LIVE</h5>';
 echo '</div>';
 // Generate HTML code for cards
 if ($result) {
@@ -32,7 +32,7 @@ if ($result) {
 echo '</div>';
 // Get the number of rows in the result set
 
-$sql = "SELECT COUNT(*) as num_rows FROM queue_list WHERE status = 2 AND DATE(date_created) = '$current_date'";
+$sql = "SELECT COUNT(*) as num_rows FROM queue_listlive WHERE status = 2 AND DATE(date_created) = '$current_date'";
 $result = $conn->query($sql);
 
 $row = $result->fetchArray();
@@ -41,7 +41,7 @@ $num_rows = $row['num_rows'];
 // Check if there are more than 9 rows
 if ($num_rows > 9) {
     // Get the last queue number
-    $sql = "SELECT * FROM queue_list WHERE status = 2 AND DATE(date_created) = '$current_date' ORDER BY queue DESC LIMIT 1";
+    $sql = "SELECT * FROM queue_listlive WHERE status = 2 AND DATE(date_created) = '$current_date' ORDER BY queue DESC LIMIT 1";
     $result = $conn->query($sql);
 
     echo '<div class="card col-md-1 shadow me-2">';

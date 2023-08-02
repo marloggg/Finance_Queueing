@@ -13,7 +13,6 @@ if(isset($_GET['id'])){
         <h3 class="card-title">Settings</h3>
     </div>
 
-
     <?php
         // Handle form submission
         if (isset($_POST['save_button'])) {
@@ -73,11 +72,11 @@ if(isset($_GET['id'])){
         $query = "SELECT default_start_time, default_cutoff_time, manual_cutoff_time FROM queuing_start_end";
         $result = $conn->query($query);
         $row = $result->fetchArray(SQLITE3_ASSOC);
- 
+
         
         // check if selected value is stored in session variable
             $selected_start_time = $row['default_start_time'];
-       
+        
         
         // generate time options
         for ($i = $start_time; $i <= $end_time; $i += $interval) {
@@ -145,13 +144,93 @@ if(isset($_GET['id'])){
                         <center>
                             <button class="btn btn-primary" type="submit" name="save_button">Save</button>
                         </center>
-                    </div>
+                    </div>                                
             </div>
         </form>
     </div>
     </div>
 </div>
 <div>
-
+    
 <label></label>
 </div>
+<div class="col-md-12">
+        <?php 
+            $img = scandir('./../update_image'); // Assuming images are stored in the './../images' directory
+            $image = isset($img[2]) ? $img[2] : null; // Check if index 2 exists, otherwise set $image to null
+            if ($image):
+        ?>
+            <!-- Display the uploaded image -->
+            <center>
+                <img src="./../update_image/<?php echo $image; ?>" alt="Uploaded Image" style="height: 50vh; width: 75%;" class="bg-dark">
+            </center>
+        <?php 
+            endif; 
+        ?>
+        <form action="" id="upload-form">
+            <!-- Use "image" instead of "video" as the form field name -->
+            <input type="hidden" name="image" value="<?php echo $image; ?>">
+            <div class="row justify-content-center my-2">
+                <div class="form-group col-md-4">
+                    <label for="img" class="control-label">Update Image</label>
+                    <!-- Set accept attribute to accept only image files -->
+                    <input type="file" name="img" id="img" class="form-control" accept="image/*" required>
+                </div>
+            </div>
+            <div class="row justify-content-center my-2">
+                <center>
+                    <button class="btn btn-primary" type="submit">Update</button>
+                </center>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(function(){
+        $('#upload-form').submit(function(e){
+            e.preventDefault();
+            $('.pop_msg').remove()
+            var _this = $(this)
+            var _el = $('<div>')
+            _el.addClass('pop_msg')
+            _this.find('button').attr('disabled', true)
+            _this.find('button[type="submit"]').text('Updating Image...')
+            $.ajax({
+                url: './../Actions.php?a=update_image', // Replace with the URL for handling image uploads
+                data: new FormData($(this)[0]),
+                cache: false,
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST',
+                dataType: 'json',
+                error: err => {
+                    console.log(err)
+                    _el.addClass('alert alert-danger')
+                    _el.text("An error occurred.")
+                    _this.prepend(_el)
+                    _el.show('slow')
+                    _this.find('button').attr('disabled', false)
+                    _this.find('button[type="submit"]').text('Update')
+                },
+                success: function(resp) {
+                    if (resp.status == 'success') {
+                        _el.addClass('alert alert-success')
+                        location.reload()
+                        if ("<?php echo isset($department_id) ?>" != 1)
+                            _this.get(0).reset();
+                    } else {
+                        _el.addClass('alert alert-danger')
+                    }
+                    _el.text(resp.msg)
+                    _el.hide()
+                    _this.prepend(_el)
+                    _el.show('slow')
+                    _this.find('button').attr('disabled', false)
+                    _this.find('button[type="submit"]').text('Save')
+                }
+            })
+        })
+    })
+</script>

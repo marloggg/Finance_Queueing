@@ -374,6 +374,20 @@ Class Actions extends DBConnection{
         
         return json_encode($resp);
     }
+    function next_queuelive(){
+        extract($_POST);
+        $get = $this->query("SELECT queue_id,`queue`,customer_name FROM `queue_listlive` where status = 2 and date(date_created) = '".date("Y-m-d")."' order by queue_id asc  limit 1");
+        @$res = $get->fetchArray();
+        $resp['status']='success';
+        if($res){
+            $this->query("UPDATE `queue_listlive` SET status = 1, cashier_id = '{$_SESSION['cashier_id']}', teller_id = '{$_SESSION['teller_id']}' WHERE queue_id = '{$res['queue_id']}'");
+            $resp['data']=$res;
+        }else{
+            $resp['data']=$res;
+        }
+        
+        return json_encode($resp);
+    }
     function update_video(){
         extract($_FILES);
         $mime = mime_content_type($vid['tmp_name']);
@@ -395,6 +409,29 @@ Class Actions extends DBConnection{
         }
         return json_encode($resp);
     }
+
+    function update_image(){
+        extract($_FILES);
+        $mime = mime_content_type($img['tmp_name']);
+        if(strstr($mime, 'image/') !== false){ // Change condition to check for 'image/' instead of 'video/'
+            $move = move_uploaded_file($img['tmp_name'], "./images/" . (time()) . "_{$img['name']}");
+            if($move){
+                $resp['status'] = 'success';
+                $_SESSION['flashdata']['type'] = 'success';
+                $_SESSION['flashdata']['msg'] = 'Image was successfully updated.';
+                if(is_file('./images/' . $_POST['image']))
+                    unlink('./images/' . $_POST['image']);
+            }else{
+                $resp['status'] = 'false';
+                $resp['msg'] = 'Unable to upload the image.';
+            }
+        }else{
+            $resp['status'] = 'false';
+            $resp['msg'] = 'Invalid image type.';
+        }
+        return json_encode($resp);
+    }
+    
 
     function get_queuelive(){
         extract($_POST);
@@ -485,8 +522,14 @@ switch($a){
     case 'next_queue':
         echo $action->next_queue();
     break;
+    case 'next_queuelive':
+        echo $action->next_queuelive();
+    break;
     case 'update_video':
         echo $action->update_video();
+    break;
+    case 'update_image':
+        echo $action->update_image();
     break;
     default:
     // default action here

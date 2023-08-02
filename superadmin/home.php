@@ -55,8 +55,8 @@
                     _el.text("An error occurred.")
                     _this.prepend(_el)
                     _el.show('slow')
-                     _this.find('button').attr('disabled',false)
-                     _this.find('button[type="submit"]').text('Update')
+                    _this.find('button').attr('disabled',false)
+                    _this.find('button[type="submit"]').text('Update')
                 },
                 success:function(resp){
                     if(resp.status == 'success'){
@@ -72,8 +72,8 @@
                     _el.hide()
                     _this.prepend(_el)
                     _el.show('slow')
-                     _this.find('button').attr('disabled',false)
-                     _this.find('button[type="submit"]').text('Save')
+                    _this.find('button').attr('disabled',false)
+                    _this.find('button[type="submit"]').text('Save')
                 }
             })
         })

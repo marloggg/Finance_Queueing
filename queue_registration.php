@@ -90,12 +90,12 @@ if ($manualCutoffTime == 0) {
         $buttonDisabled = '';
         $cutoff = "none";
     } else {
-        $buttonDisabled = 'disabled';
-        $cutoff = "block";
+        $buttonDisabled = '';
+        $cutoff = "none";
     }
 } else {
-    $buttonDisabled = 'disabled';
-    $cutoff = "block";
+    $buttonDisabled = '';
+    $cutoff = "none";
 }
 //echo "Start Time: $buttonDisabled";
 ?>
