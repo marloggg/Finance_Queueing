@@ -6,7 +6,7 @@
 
                 <div class="card col-sm-12 shadow h-100">
                     <div class="card-header">
-                        <h5 class="card-title text-center">Now Serving</h5>
+                        <h5 class="card-title text-center font-style=bold"><b>RAD</b></h5>
                     </div>
                     <div class="card-body h-100">
                         <div id="serving-list" class="list-group overflow-auto">
@@ -27,6 +27,31 @@
                             </div>
                             <?php endwhile; ?>
                         </div>
+                        <!--  -->
+                    </div>
+                    <div class="card-header">
+                        <h5 class="card-title text-center"><b>LIVE</b></h5>
+                    </div>
+                    <div class="card-body h-100">
+                        <div id="serving-list" class="list-group overflow-auto">
+                            <?php 
+                            $cashier = $conn->query("SELECT queue_listlive.*, cashier_list.*, teller_list.teller_id, teller_list.teller_name, COUNT(queue_listlive.queue_id) AS queue_count
+                            FROM queue_listlive
+                            FULL JOIN cashier_list ON queue_listlive.Cashier_id = cashier_list.cashier_id
+                            FULL JOIN teller_list ON queue_listlive.Teller_id = teller_list.teller_id
+                            WHERE date(queue_listlive.DATE_CREATED) = date('now')
+                            GROUP BY teller_list.teller_id
+                            ORDER BY queue_listlive.queue_id DESC limit 4");
+                            
+                            while($row = $cashier->fetchArray()):
+                            ?>
+                            <div class="list-group-item" data-id="<?php echo $row['cashier_id'] ?>" style="display:none">
+                                <div class="fs-5 fw-2 cashier-name border-bottom border-info"><?php echo $row['teller_name'] ?></div>
+                                <div class="ps-4"><span class="serve-queue fs-4 fw-bold">10001 - Ivan Jay Almeria</span></div>
+                            </div>
+                            <?php endwhile; ?>
+                        </div>
+                        <!-- // -->
                     </div>
                 </div>
             </div>
