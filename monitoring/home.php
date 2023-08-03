@@ -130,12 +130,43 @@
                     }else{
                         nitem.show('slow')
                       //  speak("Queue Number "+(Math.abs(resp.queue))+resp.name+", Please proceed to "+cashier) with name
-                        speak("LIVE"+(Math.abs(resp.queue))+", Please proceed to "+cashier)
+                        speak("RAD"+(Math.abs(resp.queue))+", Please proceed to "+cashier)
                     }
                 }
             }
         })
     }
+
+    // function new_queue($cashier_id,$qid){
+    //     $.ajax({
+    //         url:'./../Actions.php?a=get_queue',
+    //         method:'POST',
+    //         data:{cashier_id:$cashier_id,qid:$qid},
+    //         dataType:'JSON',
+    //         error:err=>{
+    //             console.log(err)
+    //         },
+    //         success:function(resp){
+    //             if(resp.status =='success'){
+    //                 var item = $('#serving-list').find('.list-group-item[data-id="'+$cashier_id+'"]')
+    //                 var cashier =  item.find('.cashier-name').text()
+    //                 var nitem = item.clone()
+    //                 //nitem.find('.serve-queue').text(resp.queue+" - "+resp.name) with name
+    //                     nitem.find('.serve-queue').text(resp.queue)
+    //                     item.remove()
+    //                     $('#serving-list').prepend(nitem)
+    //                 if(resp.queue == ''){
+    //                     nitem.hide('slow')
+    //                 }else{
+    //                     nitem.show('slow')
+    //                   //  speak("Queue Number "+(Math.abs(resp.queue))+resp.name+", Please proceed to "+cashier) with name
+    //                     speak("LIVE"+(Math.abs(resp.queue))+", Please proceed to "+cashier)
+    //                 }
+    //             }
+    //         }
+    //     })
+    // }
+    
     $(function(){
         setInterval(() => {
             time_loop()

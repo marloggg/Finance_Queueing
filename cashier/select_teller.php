@@ -8,10 +8,7 @@ if(isset($_SESSION['teller_id'])){
     header("Location:./index.php");
     exit;
 }
-if(isset($_SESSION['trasaction_id'])){
-    header("Location:./index.php");
-    exit;
-}
+
 
 require_once('./../DBConnection.php');
 
@@ -43,21 +40,7 @@ require_once('./../DBConnection.php');
         <div class="card my-3 col-md-4 offset-md-4">
             <div class="card-body">
 
-                <form action="" id="login-formlive">
-                    <center><small>Please select transaction</small></center>
-                    <div class="form-group">
-                    <label for="trasaction_id" class="control-label">Transaction Type</label>
-                        <select name="trasaction_id" id="trasaction_id" data-placeholder="Please Select Transaction" class="custom-select2 select2">
-                            <option disabled selected></option>
-                            <?php 
-                            $cashier = $conn->query("SELECT * FROM `trasaction_list` where `status` = 1 order by `trasaction_name` asc");
-                            while($row = $cashier->fetchArray()):
-                            ?>
-                                <option value="<?php echo $row['trasaction_id'] ?>"><?php echo $row['trasaction_name'] ?></option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
-                </form>
+                
 
                 <form action="" id="login-form">
                     <center><small>Please Select Teller to Operate</small></center>
@@ -126,46 +109,6 @@ _this.find('button[type="submit"]').text('Save');
         })
     })
 
-    $(function(){
-        $('.select2').select2({width:'100%'})
-        $('#login-formlive').submit(function(e){
-            e.preventDefault();
-            $('.pop_msg').remove()
-            var _this = $(this)
-            var _el = $('<div>')
-                _el.addClass('pop_msg')
-            _this.find('button').attr('disabled',true)
-            _this.find('button[type="submit"]').text('Loging in...')
-            $.ajax({
-                url:'./../Actions.php?a=t_login',
-                method:'POST',
-                data:$(this).serialize(),
-                dataType:'JSON',
-                error: (err) => {
-console.log(err);
-_el.addClass('alert alert-danger');
-_el.text(`An error occurred: ${err.message}`);
-_this.prepend(_el);
-_el.show('slow');
-_this.find('button').attr('disabled',false);
-_this.find('button[type="submit"]').text('Save');
-},
-                success:function(resp){
-                    if(resp.status == 'success'){
-                            location.replace('./');
-                    }else{
-                        _el.addClass('alert alert-danger')
-                    }
-                    _el.text(resp.msg)
-
-                    _el.hide()
-                    _this.prepend(_el)
-                    _el.show('slow')
-                    _this.find('button').attr('disabled',false)
-                    _this.find('button[type="submit"]').text('Save')
-                }
-            })
-        })
-    })
+    
 </script>
 </html>
