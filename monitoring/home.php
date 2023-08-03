@@ -137,9 +137,9 @@
         })
     }
 
-    // function new_queue($cashier_id,$qid){
+    // function new_queuelive($cashier_id,$qid){
     //     $.ajax({
-    //         url:'./../Actions.php?a=get_queue',
+    //         url:'./../Actions.php?a=get_queuelive',
     //         method:'POST',
     //         data:{cashier_id:$cashier_id,qid:$qid},
     //         dataType:'JSON',
