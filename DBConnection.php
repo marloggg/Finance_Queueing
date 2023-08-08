@@ -105,7 +105,23 @@ Class DBConnection extends SQLite3{
             FOREIGN KEY(`guest_id`) REFERENCES `guest_list`(`guest_id`)
         )");
 
-         //$this->exec("INSERT or IGNORE INTO `user_list` VALUES (1,'Administrator','admin',md5('admin123'),1, CURRENT_TIMESTAMP)");
+    $this->exec("CREATE TABLE IF NOT EXISTS `queue_list_sa` (
+            `queue_id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            `queue` TEXT NOT NULL,
+            `customer_name` TEXT NOT NULL,
+            `status` INTEGER NOT NULL DEFAULT 2,
+            `date_created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            `cashier_id` INTEGER,
+            `teller_id` INTEGER,
+            `student_id` TEXT,
+            `guest_id` INTEGER,
+            FOREIGN KEY(`student_id`) REFERENCES `student_list`(`student_id`),
+            FOREIGN KEY(`teller_id`) REFERENCES `teller_list`(`teller_id`),
+            FOREIGN KEY(`cashier_id`) REFERENCES `cashier_list`(`cashier_id`),
+            FOREIGN KEY(`guest_id`) REFERENCES `guest_list`(`guest_id`)
+        )");
+
+        //  $this->exec("INSERT or IGNORE INTO `user_list` VALUES (1,'Administrator','admin',md5('admin123'),1, CURRENT_TIMESTAMP)");
         
     }
     function __destruct(){

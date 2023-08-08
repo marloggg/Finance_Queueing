@@ -100,6 +100,35 @@ if ($manualCutoffTime == 0) {
 //echo "Start Time: $buttonDisabled";
 ?>
 
+                <!-- RAD -->
+                <div class="row justify-content-center">
+                                    <div class="col-md-7">
+
+                                        <div class="card rouded-0 shadow">
+                                            <div class="card-header rounded-0" style="display:<?php echo $cutoff; ?>;">
+                                                <div class="h5 card-title" style="color:red" >I'm sorry, the cutoff time has passed, and it is no longer possible to generate a queue number. </div>
+                                            </div>
+                                            <div class="card-header rounded-0">
+                                                <div class="h5 card-title">RAD (For Undergraduate & Graduate program)</div>
+                                            </div>
+                                            <div class="card-body rounded-0">
+                                                <form action="" id="queue-form">
+                                                    <div class="form-group">
+                                                        <label for="customer_name" class="control-label text-info">Enter your Name</label>
+                                                        <input type="text" id="customer_name" name="customer_name" autofocus autocomplete="off" type="submit" <?php echo $buttonDisabled; ?> class="form-control form-control-lg rounded-0 border-0 border-bottom" required>
+                                                    </div>                                
+                                                        <div class="form-group text-center my-2">
+                                                        <button class="btn-primary btn-lg btn col-sm-4 rounded-0" type="submit" <?php echo $buttonDisabled; ?>>Get Queue</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+            <!-- RAD END -->
+
+            <!-- LIVE -->
                 <div class="row justify-content-center">
                     <div class="col-md-7">
 
@@ -125,10 +154,9 @@ if ($manualCutoffTime == 0) {
 
                     </div>
                 </div>
+                <!-- END LIVE -->               
 
-                
-
-            
+                <!-- SA -->
                 <div class="row justify-content-center">
                     <div class="col-md-7">
 
@@ -137,10 +165,10 @@ if ($manualCutoffTime == 0) {
                                 <div class="h5 card-title" style="color:red" >I'm sorry, the cutoff time has passed, and it is no longer possible to generate a queue number. </div>
                             </div>
                             <div class="card-header rounded-0">
-                                <div class="h5 card-title">RAD (For Undergraduate & Graduate program)</div>
+                                <div class="h5 card-title">Student Accounts (Tagging, Promissory Note and other concern. )</div>
                             </div>
                             <div class="card-body rounded-0">
-                                <form action="" id="queue-form">
+                                <form action="" id="queue_sa-form">
                                     <div class="form-group">
                                         <label for="customer_name" class="control-label text-info">Enter your Name</label>
                                         <input type="text" id="customer_name" name="customer_name" autofocus autocomplete="off" type="submit" <?php echo $buttonDisabled; ?> class="form-control form-control-lg rounded-0 border-0 border-bottom" required>
@@ -154,7 +182,7 @@ if ($manualCutoffTime == 0) {
 
                     </div>
                 </div>
-                            
+            <!-- SA END -->
 
         </div>
     </div>
@@ -297,6 +325,53 @@ if ($manualCutoffTime == 0) {
                     })
             })
         })
+
+        // sa
+        $(function(){
+            $('#queue_sa-form').submit(function(e){
+                e.preventDefault()
+                var _this = $(this)
+                _this.find('.pop-msg').remove()
+                var el = $('<div>')
+                    el.addClass('alert pop-msg')
+                    el.hide()
+                    _this.find('button[type="submit"]').attr('disabled',true)
+                    $.ajax({
+                        url:'./Actions.php?a=save_queue_sa',
+                        method:'POST',
+                        data:_this.serialize(),
+                        dataType:'JSON',
+                        error:err=>{
+                            console.log(err)
+                            el.addClass("alert-danger")
+                            el.text("An error occured while saving data.")
+                            _this.find('button[type="submit"]').attr('disabled',false)
+                            _this.prepend(el)
+                            el.show('slow')
+                        },
+                        success:function(resp){
+                            if(resp.status == 'success'){
+                                uni_modal("Your Queue","get_queue_sa.php?success=true&id="+resp.id)
+                                $('#uni_modal').on('hide.bs.modal',function(e){
+                                    location.reload()
+                                })
+                            }else if(resp.status ='failed' && !!resp.msg){
+                                el.addClass('alert-'+resp.status)
+                                el.text(resp.msg)
+                                _this.prepend(el)
+                                el.show('slow')
+                            }else{
+                                el.addClass('alert-'+resp.status)
+                                el.text("An Error occured.")
+                                _this.prepend(el)
+                                el.show('slow')
+                            }
+                            _this.find('button[type="submit"]').attr('disabled',false)
+                        }
+                    })
+            })
+        })
+        // sa end
     
 
         

@@ -388,6 +388,20 @@ Class Actions extends DBConnection{
         
         return json_encode($resp);
     }
+    function next_queue_sa(){
+        extract($_POST);
+        $get = $this->query("SELECT queue_id,`queue`,customer_name FROM `queue_list_sa` where status = 2 and date(date_created) = '".date("Y-m-d")."' order by queue_id asc  limit 1");
+        @$res = $get->fetchArray();
+        $resp['status']='success';
+        if($res){
+            $this->query("UPDATE `queue_list_sa` SET status = 1, cashier_id = '{$_SESSION['cashier_id']}', teller_id = '{$_SESSION['teller_id']}' WHERE queue_id = '{$res['queue_id']}'");
+            $resp['data']=$res;
+        }else{
+            $resp['data']=$res;
+        }
+        
+        return json_encode($resp);
+    }
     function update_video(){
         extract($_FILES);
         $mime = mime_content_type($vid['tmp_name']);
@@ -447,6 +461,22 @@ Class Actions extends DBConnection{
         }
         return json_encode($resp);
     }
+
+    function get_queue_sa(){
+        extract($_POST);
+        $qry = $this->query("SELECT * FROM `queue_list_sa` where queue_id = '{$qid}' ");
+        @$res = $qry->fetchArray();
+            $resp['status']='success';
+        if($res){
+            $resp['queue']=$res['queue'];
+            $resp['name']=$res['customer_name'];
+        }else{
+            $resp['queue']="";
+            $resp['name']="";
+        }
+        return json_encode($resp);
+    }
+
     function save_queuelive(){
         $code = sprintf("%'.05d",1);
         while(true){
@@ -461,6 +491,31 @@ Class Actions extends DBConnection{
         $_POST['queue'] = $code;
         extract($_POST);
         $sql = "INSERT INTO `queue_listlive` (`queue`, `customer_name`, `date_created`) VALUES ('{$queue}', '{$customer_name}', datetime('now', '+8 hours'))";
+        $save = $this->query($sql);
+        if($save){
+            $resp['status'] = 'success';
+            $resp['id'] = $this->query("SELECT last_insert_rowid()")->fetchArray()[0];
+        }else{
+            $resp['status'] = 'failed';
+            $resp['msg'] = "An error occured. Error: ".$this->lastErrorMsg();
+        }
+        return json_encode($resp);
+    }
+
+    function save_queue_sa(){
+        $code = sprintf("%'.05d",1);
+        while(true){
+            $chk = $this->query("SELECT count(queue_id) `count` FROM `queue_list_sa` where queue = '".$code."' and date(date_created) = '".date('Y-m-d')."' ")->fetchArray()['count'];
+            if($chk > 0){
+                $code = sprintf("%'.05d",abs($code) + 1);
+                
+            }else{
+                break;
+            }
+        }
+        $_POST['queue'] = $code;
+        extract($_POST);
+        $sql = "INSERT INTO `queue_list_sa` (`queue`, `customer_name`, `date_created`) VALUES ('{$queue}', '{$customer_name}', datetime('now', '+8 hours'))";
         $save = $this->query($sql);
         if($save){
             $resp['status'] = 'success';
@@ -513,11 +568,17 @@ switch($a){
     case 'save_queuelive':
         echo $action->save_queuelive();
     break;
+    case 'save_queue_sa':
+        echo $action->save_queue_sa();
+    break;
     case 'get_queue':
         echo $action->get_queue();
     break;
     case 'get_queuelive':
         echo $action->get_queuelive();
+    break;
+    case 'get_queue_sa':
+        echo $action->get_queue_sa();
     break;
     case 'next_queue':
         echo $action->next_queue();
@@ -525,12 +586,15 @@ switch($a){
     case 'next_queuelive':
         echo $action->next_queuelive();
     break;
+    case 'next_queue_sa':
+        echo $action->next_queue_sa();
+    break;
     case 'update_video':
         echo $action->update_video();
     break;
-    case 'update_image':
-        echo $action->update_image();
-    break;
+    // case 'update_image':
+    //     echo $action->update_image();
+    // break;
     default:
     // default action here
     break;

@@ -33,7 +33,7 @@
                         <h5 class="card-title text-center"><b>LIVE</b></h5>
                     </div>
                     <div class="card-body h-100">
-                        <div id="serving-list" class="list-group overflow-auto">
+                        <div id="serving-listlive" class="list-group overflow-auto">
                             <?php 
                             $cashier = $conn->query("SELECT queue_listlive.*, cashier_list.*, teller_list.teller_id, teller_list.teller_name, COUNT(queue_listlive.queue_id) AS queue_count
                             FROM queue_listlive
@@ -162,35 +162,35 @@
         })
     }
 
-    // function new_queuelive($cashier_id,$qid){
-    //     $.ajax({
-    //         url:'./../Actions.php?a=get_queuelive',
-    //         method:'POST',
-    //         data:{cashier_id:$cashier_id,qid:$qid},
-    //         dataType:'JSON',
-    //         error:err=>{
-    //             console.log(err)
-    //         },
-    //         success:function(resp){
-    //             if(resp.status =='success'){
-    //                 var item = $('#serving-list').find('.list-group-item[data-id="'+$cashier_id+'"]')
-    //                 var cashier =  item.find('.cashier-name').text()
-    //                 var nitem = item.clone()
-    //                 //nitem.find('.serve-queue').text(resp.queue+" - "+resp.name) with name
-    //                     nitem.find('.serve-queue').text(resp.queue)
-    //                     item.remove()
-    //                     $('#serving-list').prepend(nitem)
-    //                 if(resp.queue == ''){
-    //                     nitem.hide('slow')
-    //                 }else{
-    //                     nitem.show('slow')
-    //                   //  speak("Queue Number "+(Math.abs(resp.queue))+resp.name+", Please proceed to "+cashier) with name
-    //                     speak("LIVE"+(Math.abs(resp.queue))+", Please proceed to "+cashier)
-    //                 }
-    //             }
-    //         }
-    //     })
-    // }
+    function new_queuelive($cashier_id,$qid){
+        $.ajax({
+            url:'./../Actions.php?a=get_queuelive',
+            method:'POST',
+            data:{cashier_id:$cashier_id,qid:$qid},
+            dataType:'JSON',
+            error:err=>{
+                console.log(err)
+            },
+            success:function(resp){
+                if(resp.status =='success'){
+                    var item = $('#serving-listlive').find('.list-group-item[data-id="'+$cashier_id+'"]')
+                    var cashier =  item.find('.cashier-name').text()
+                    var nitem = item.clone()
+                    //nitem.find('.serve-queue').text(resp.queue+" - "+resp.name) with name
+                        nitem.find('.serve-queue').text(resp.queue)
+                        item.remove()
+                        $('#serving-listlive').prepend(nitem)
+                    if(resp.queue == ''){
+                        nitem.hide('slow')
+                    }else{
+                        nitem.show('slow')
+                      //  speak("Queue Number "+(Math.abs(resp.queue))+resp.name+", Please proceed to "+cashier) with name
+                        speak("LIVE"+(Math.abs(resp.queue))+", Please proceed to "+cashier)
+                    }
+                }
+            }
+        })
+    }
     
     $(function(){
         setInterval(() => {
@@ -211,6 +211,7 @@
             if(!!Data.type && typeof Data.type != undefined && typeof Data.type != null){
                 if(Data.type == 'queue'){
                     new_queue(Data.cashier_id,Data.qid)
+                    new_queuelive(Data.cashier_id,Data.qid)
                 }
                 if(Data.type == 'test'){
                     speak("This is a sample notification.")
