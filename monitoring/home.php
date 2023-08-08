@@ -3,8 +3,8 @@
     <div class="border-dark border-3 border shadow d-none" id="monitor-holder">
         <div class="row my-0 mx-0">
             <div class="col-md-5 d-flex flex-column justify-content-center align-items-center border-end border-dark" id="serving-field">
-
                 <div class="card col-sm-12 shadow h-100">
+                    
                     <div class="card-header">
                         <h5 class="card-title text-center font-style=bold"><b>RAD</b></h5>
                     </div>
@@ -26,9 +26,9 @@
                                 <div class="ps-4"><span class="serve-queue fs-4 fw-bold">10001 - Ivan Jay Almeria</span></div>
                             </div>
                             <?php endwhile; ?>
-                        </div>
-                        <!--  -->
+                        </div>                        
                     </div>
+
                     <div class="card-header">
                         <h5 class="card-title text-center"><b>LIVE</b></h5>
                     </div>
@@ -49,12 +49,36 @@
                                 <div class="fs-5 fw-2 cashier-name border-bottom border-info"><?php echo $row['teller_name'] ?></div>
                                 <div class="ps-4"><span class="serve-queue fs-4 fw-bold">10001 - Ivan Jay Almeria</span></div>
                             </div>
-                            <?php endwhile; ?>
+                            <?php endwhile; ?>                            
                         </div>
-                        <!-- // -->
+                    </div>
+
+                    <div class="card-header">
+                        <h5 class="card-title text-center"><b>STUDENT ACCOUNT</b></h5>
+                    </div>
+                    <div class="card-body h-100">
+                        <div id="serving-list_sa" class="list-group overflow-auto">
+                            <?php 
+                            $cashier = $conn->query("SELECT queue_list_sa.*, cashier_list.*, teller_list.teller_id, teller_list.teller_name, COUNT(queue_list_sa.queue_id) AS queue_count
+                            FROM queue_list_sa
+                            FULL JOIN cashier_list ON queue_list_sa.Cashier_id = cashier_list.cashier_id
+                            FULL JOIN teller_list ON queue_list_sa.Teller_id = teller_list.teller_id
+                            WHERE date(queue_list_sa.DATE_CREATED) = date('now')
+                            GROUP BY teller_list.teller_id
+                            ORDER BY queue_list_sa.queue_id DESC limit 4");
+                            
+                            while($row = $cashier->fetchArray()):
+                            ?>
+                            <div class="list-group-item" data-id="<?php echo $row['cashier_id'] ?>" style="display:none">
+                                <div class="fs-5 fw-2 cashier-name border-bottom border-info"><?php echo $row['teller_name'] ?></div>
+                                <div class="ps-4"><span class="serve-queue fs-4 fw-bold">10001 - Ivan Jay Almeria</span></div>
+                            </div>
+                            <?php endwhile; ?>                 
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+
             <div class="col-md-7 d-flex flex-column justify-content-center align-items-center bg-dark bg-gradient text-light" id="action-field">
                 <div class="col-auto flex-grow-1">
                 <?php 
@@ -132,7 +156,8 @@
         $('#serving-list').height($('#serving-list').parent().height() - 30)
     }
 
-    function new_queue($cashier_id,$qid){
+// RAD
+function new_queue($cashier_id,$qid){
         $.ajax({
             url:'./../Actions.php?a=get_queue',
             method:'POST',
@@ -155,14 +180,16 @@
                     }else{
                         nitem.show('slow')
                       //  speak("Queue Number "+(Math.abs(resp.queue))+resp.name+", Please proceed to "+cashier) with name
-                        speak("RAD"+(Math.abs(resp.queue))+", Please proceed to "+cashier)
+                        speak("RAD NUMBER"+(Math.abs(resp.queue))+", Please proceed to "+cashier)
                     }
                 }
             }
         })
     }
+// RAD END
 
-    function new_queuelive($cashier_id,$qid){
+// LIVE
+function new_queuelive($cashier_id,$qid){
         $.ajax({
             url:'./../Actions.php?a=get_queuelive',
             method:'POST',
@@ -185,12 +212,45 @@
                     }else{
                         nitem.show('slow')
                       //  speak("Queue Number "+(Math.abs(resp.queue))+resp.name+", Please proceed to "+cashier) with name
-                        speak("LIVE"+(Math.abs(resp.queue))+", Please proceed to "+cashier)
+                        speak("LIVE NUMBER"+(Math.abs(resp.queue))+", Please proceed to "+cashier)
                     }
                 }
             }
         })
     }
+// LIVE END
+
+    // SA
+    function new_queue_sa($cashier_id,$qid){
+        $.ajax({
+            url:'./../Actions.php?a=get_queue_sa',
+            method:'POST',
+            data:{cashier_id:$cashier_id,qid:$qid},
+            dataType:'JSON',
+            error:err=>{
+                console.log(err)
+            },
+            success:function(resp){
+                if(resp.status =='success'){
+                    var item = $('#serving-list_sa').find('.list-group-item[data-id="'+$cashier_id+'"]')
+                    var cashier =  item.find('.cashier-name').text()
+                    var nitem = item.clone()
+                    //nitem.find('.serve-queue').text(resp.queue+" - "+resp.name) with name
+                        nitem.find('.serve-queue').text(resp.queue)
+                        item.remove()
+                        $('#serving-list_sa').prepend(nitem)
+                    if(resp.queue == ''){
+                        nitem.hide('slow')
+                    }else{
+                        nitem.show('slow')
+                      //  speak("Queue Number "+(Math.abs(resp.queue))+resp.name+", Please proceed to "+cashier) with name
+                        speak("STUDENT ACCOUNT NUMBER"+(Math.abs(resp.queue))+", Please proceed to "+cashier)
+                    }
+                }
+            }
+        })
+    }
+    // SA END
     
     $(function(){
         setInterval(() => {
@@ -212,6 +272,7 @@
                 if(Data.type == 'queue'){
                     new_queue(Data.cashier_id,Data.qid)
                     new_queuelive(Data.cashier_id,Data.qid)
+                    new_queue_sa(Data.cashier_id,Data.qid)          
                 }
                 if(Data.type == 'test'){
                     speak("This is a sample notification.")

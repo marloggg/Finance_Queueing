@@ -31,7 +31,7 @@
         <div class="col-md-6 d-flex flex-column justify-content-center align-items-center" id="serving-field">
             <div class="card col-sm-8 shadow">
                 <div class="card-header">
-                    <h5 class="card-title text-center">Now Serving</h5>
+                    <h5 class="card-title text-center">Now Serving (RAD)</h5>
                 </div>
                 <div class="card-body">
                     <div class="fs-1  my-2 fw-bold text-center"><span id="queue">-----</span></div>
@@ -84,7 +84,7 @@
         <div class="col-md-6 d-flex flex-column justify-content-center align-items-center" id="serving-fieldlive">
             <div class="card col-sm-8 shadow">
                 <div class="card-header">
-                    <h5 class="card-title text-center">Now Serving</h5>
+                    <h5 class="card-title text-center">Now Serving (LIVE)</h5>
                 </div>
                 <div class="card-body">
                     <div class="fs-1  my-2 fw-bold text-center"><span id="queuelive">-----</span></div>
@@ -139,7 +139,7 @@
         <div class="col-md-6 d-flex flex-column justify-content-center align-items-center" id="serving-field_sa">
             <div class="card col-sm-8 shadow">
                 <div class="card-header">
-                    <h5 class="card-title text-center">Now Serving</h5>
+                    <h5 class="card-title text-center">Now Serving (STUDENT ACCOUNT)</h5>
                 </div>
                 <div class="card-body">
                     <div class="fs-1  my-2 fw-bold text-center"><span id="queue_sa">-----</span></div>

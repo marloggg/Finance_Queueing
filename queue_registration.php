@@ -165,7 +165,7 @@ if ($manualCutoffTime == 0) {
                                 <div class="h5 card-title" style="color:red" >I'm sorry, the cutoff time has passed, and it is no longer possible to generate a queue number. </div>
                             </div>
                             <div class="card-header rounded-0">
-                                <div class="h5 card-title">Student Accounts (Tagging, Promissory Note and other concern. )</div>
+                                <div class="h5 card-title">Student Accounts (Tagging, Promissory Note and other concern.)</div>
                             </div>
                             <div class="card-body rounded-0">
                                 <form action="" id="queue_sa-form">
@@ -233,144 +233,143 @@ if ($manualCutoffTime == 0) {
         </div>
         </div>
     </div>
+
     <script>
-
-
-        $(function(){
-            $('#queue-form').submit(function(e){
-                e.preventDefault()
-                var _this = $(this)
-                _this.find('.pop-msg').remove()
-                var el = $('<div>')
-                    el.addClass('alert pop-msg')
-                    el.hide()
-                    _this.find('button[type="submit"]').attr('disabled',true)
-                    $.ajax({
-                        url:'./Actions.php?a=save_queue',
-                        method:'POST',
-                        data:_this.serialize(),
-                        dataType:'JSON',
-                        error:err=>{
-                            console.log(err)
-                            el.addClass("alert-danger")
-                            el.text("An error occured while saving data.")
-                            _this.find('button[type="submit"]').attr('disabled',false)
+    $(function(){
+        $('#queue-form').submit(function(e){
+            e.preventDefault()
+            var _this = $(this)
+            _this.find('.pop-msg').remove()
+            var el = $('<div>')
+                el.addClass('alert pop-msg')
+                el.hide()
+                _this.find('button[type="submit"]').attr('disabled',true)
+                $.ajax({
+                    url:'./Actions.php?a=save_queue',
+                    method:'POST',
+                    data:_this.serialize(),
+                    dataType:'JSON',
+                    error:err=>{
+                        console.log(err)
+                        el.addClass("alert-danger")
+                        el.text("An error occured while saving data.")
+                        _this.find('button[type="submit"]').attr('disabled',false)
+                        _this.prepend(el)
+                        el.show('slow')
+                    },
+                    success:function(resp){
+                        if(resp.status == 'success'){
+                            uni_modal("Your Queue","get_queue.php?success=true&id="+resp.id)
+                            $('#uni_modal').on('hide.bs.modal',function(e){
+                                location.reload()
+                            })
+                        }else if(resp.status ='failed' && !!resp.msg){
+                            el.addClass('alert-'+resp.status)
+                            el.text(resp.msg)
                             _this.prepend(el)
                             el.show('slow')
-                        },
-                        success:function(resp){
-                            if(resp.status == 'success'){
-                                uni_modal("Your Queue","get_queue.php?success=true&id="+resp.id)
-                                $('#uni_modal').on('hide.bs.modal',function(e){
-                                    location.reload()
-                                })
-                            }else if(resp.status ='failed' && !!resp.msg){
-                                el.addClass('alert-'+resp.status)
-                                el.text(resp.msg)
-                                _this.prepend(el)
-                                el.show('slow')
-                            }else{
-                                el.addClass('alert-'+resp.status)
-                                el.text("An Error occured.")
-                                _this.prepend(el)
-                                el.show('slow')
-                            }
-                            _this.find('button[type="submit"]').attr('disabled',false)
-                        }
-                    })
-            })
-        })
-
-        $(function(){
-            $('#queuelive-form').submit(function(e){
-                e.preventDefault()
-                var _this = $(this)
-                _this.find('.pop-msg').remove()
-                var el = $('<div>')
-                    el.addClass('alert pop-msg')
-                    el.hide()
-                    _this.find('button[type="submit"]').attr('disabled',true)
-                    $.ajax({
-                        url:'./Actions.php?a=save_queuelive',
-                        method:'POST',
-                        data:_this.serialize(),
-                        dataType:'JSON',
-                        error:err=>{
-                            console.log(err)
-                            el.addClass("alert-danger")
-                            el.text("An error occured while saving data.")
-                            _this.find('button[type="submit"]').attr('disabled',false)
+                        }else{
+                            el.addClass('alert-'+resp.status)
+                            el.text("An Error occured.")
                             _this.prepend(el)
                             el.show('slow')
-                        },
-                        success:function(resp){
-                            if(resp.status == 'success'){
-                                uni_modal("Your Queue","get_queuelive.php?success=true&id="+resp.id)
-                                $('#uni_modal').on('hide.bs.modal',function(e){
-                                    location.reload()
-                                })
-                            }else if(resp.status ='failed' && !!resp.msg){
-                                el.addClass('alert-'+resp.status)
-                                el.text(resp.msg)
-                                _this.prepend(el)
-                                el.show('slow')
-                            }else{
-                                el.addClass('alert-'+resp.status)
-                                el.text("An Error occured.")
-                                _this.prepend(el)
-                                el.show('slow')
-                            }
-                            _this.find('button[type="submit"]').attr('disabled',false)
                         }
-                    })
-            })
+                        _this.find('button[type="submit"]').attr('disabled',false)
+                    }
+                })
         })
+    })
+
+    $(function(){
+        $('#queuelive-form').submit(function(e){
+            e.preventDefault()
+            var _this = $(this)
+            _this.find('.pop-msg').remove()
+            var el = $('<div>')
+                el.addClass('alert pop-msg')
+                el.hide()
+                _this.find('button[type="submit"]').attr('disabled',true)
+                $.ajax({
+                    url:'./Actions.php?a=save_queuelive',
+                    method:'POST',
+                    data:_this.serialize(),
+                    dataType:'JSON',
+                    error:err=>{
+                        console.log(err)
+                        el.addClass("alert-danger")
+                        el.text("An error occured while saving data.")
+                        _this.find('button[type="submit"]').attr('disabled',false)
+                        _this.prepend(el)
+                        el.show('slow')
+                    },
+                    success:function(resp){
+                        if(resp.status == 'success'){
+                            uni_modal("Your Queue","get_queuelive.php?success=true&id="+resp.id)
+                            $('#uni_modal').on('hide.bs.modal',function(e){
+                                location.reload()
+                            })
+                        }else if(resp.status ='failed' && !!resp.msg){
+                            el.addClass('alert-'+resp.status)
+                            el.text(resp.msg)
+                            _this.prepend(el)
+                            el.show('slow')
+                        }else{
+                            el.addClass('alert-'+resp.status)
+                            el.text("An Error occured.")
+                            _this.prepend(el)
+                            el.show('slow')
+                        }
+                        _this.find('button[type="submit"]').attr('disabled',false)
+                    }
+                })
+        })
+    })
 
         // sa
-        $(function(){
-            $('#queue_sa-form').submit(function(e){
-                e.preventDefault()
-                var _this = $(this)
-                _this.find('.pop-msg').remove()
-                var el = $('<div>')
-                    el.addClass('alert pop-msg')
-                    el.hide()
-                    _this.find('button[type="submit"]').attr('disabled',true)
-                    $.ajax({
-                        url:'./Actions.php?a=save_queue_sa',
-                        method:'POST',
-                        data:_this.serialize(),
-                        dataType:'JSON',
-                        error:err=>{
-                            console.log(err)
-                            el.addClass("alert-danger")
-                            el.text("An error occured while saving data.")
-                            _this.find('button[type="submit"]').attr('disabled',false)
+    $(function(){
+        $('#queue_sa-form').submit(function(e){
+            e.preventDefault()
+            var _this = $(this)
+            _this.find('.pop-msg').remove()
+            var el = $('<div>')
+                el.addClass('alert pop-msg')
+                el.hide()
+                _this.find('button[type="submit"]').attr('disabled',true)
+                $.ajax({
+                    url:'./Actions.php?a=save_queue_sa',
+                    method:'POST',
+                    data:_this.serialize(),
+                    dataType:'JSON',
+                    error:err=>{
+                        console.log(err)
+                        el.addClass("alert-danger")
+                        el.text("An error occured while saving data.")
+                        _this.find('button[type="submit"]').attr('disabled',false)
+                        _this.prepend(el)
+                        el.show('slow')
+                    },
+                    success:function(resp){
+                        if(resp.status == 'success'){
+                            uni_modal("Your Queue","get_queue_sa.php?success=true&id=" + resp.id)
+                            $('#uni_modal').on('hide.bs.modal',function(e){
+                                location.reload()
+                            })
+                        }else if(resp.status ='failed' && !!resp.msg){
+                            el.addClass('alert-'+resp.status)
+                            el.text(resp.msg)
                             _this.prepend(el)
                             el.show('slow')
-                        },
-                        success:function(resp){
-                            if(resp.status == 'success'){
-                                uni_modal("Your Queue","get_queue_sa.php?success=true&id="+resp.id)
-                                $('#uni_modal').on('hide.bs.modal',function(e){
-                                    location.reload()
-                                })
-                            }else if(resp.status ='failed' && !!resp.msg){
-                                el.addClass('alert-'+resp.status)
-                                el.text(resp.msg)
-                                _this.prepend(el)
-                                el.show('slow')
-                            }else{
-                                el.addClass('alert-'+resp.status)
-                                el.text("An Error occured.")
-                                _this.prepend(el)
-                                el.show('slow')
-                            }
-                            _this.find('button[type="submit"]').attr('disabled',false)
+                        }else{
+                            el.addClass('alert-'+resp.status)
+                            el.text("An Error occured.")
+                            _this.prepend(el)
+                            el.show('slow')
                         }
-                    })
-            })
+                        _this.find('button[type="submit"]').attr('disabled',false)
+                    }
+                })
         })
+    })
         // sa end
     
 
